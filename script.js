@@ -1,27 +1,29 @@
 const slider = document.querySelector('.items');
-let startX = 0;
-let startScrollLeft = 0;
-let isDragging = false;
+let isDown = false;
+let startX;
+let scrollLeft;
 
 slider.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  startX = e.pageX;
-  startScrollLeft = slider.scrollLeft;
+  isDown = true;
   slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
 });
 
-slider.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  const delta = startX - e.pageX;
-  slider.scrollLeft = startScrollLeft + delta;
-});
-
-slider.addEventListener('mouseup', () => {
-  isDragging = false;
+document.addEventListener('mouseup', () => {
+  isDown = false;
   slider.classList.remove('active');
 });
 
+document.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX);
+  slider.scrollLeft = scrollLeft - walk;
+});
+
 slider.addEventListener('mouseleave', () => {
-  isDragging = false;
+  isDown = false;
   slider.classList.remove('active');
 });
