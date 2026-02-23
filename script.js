@@ -1,52 +1,30 @@
-const container = document.querySelector('.items');
-const items = document.querySelectorAll('.item');
+const slider = document.querySelector('.items');
 
-let isDragging = false;
-let currentItem = null;
-let offsetX = 0;
-let offsetY = 0;
+let isDown = false;
+let startX;
+let scrollLeft;
 
-// Attach mousedown to each cube
-items.forEach(item => {
-  item.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    currentItem = item;
-
-    const itemRect = item.getBoundingClientRect();
-
-    offsetX = e.clientX - itemRect.left;
-    offsetY = e.clientY - itemRect.top;
-
-    item.style.cursor = 'grabbing';
-  });
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
 });
 
-// Mouse move – drag logic
-document.addEventListener('mousemove', (e) => {
-  if (!isDragging || !currentItem) return;
-
-  const containerRect = container.getBoundingClientRect();
-  const itemRect = currentItem.getBoundingClientRect();
-
-  let left = e.clientX - containerRect.left - offsetX;
-  let top = e.clientY - containerRect.top - offsetY;
-
-  // Boundary constraints
-  const maxLeft = container.clientWidth - itemRect.width;
-  const maxTop = container.clientHeight - itemRect.height;
-
-  left = Math.max(0, Math.min(left, maxLeft));
-  top = Math.max(0, Math.min(top, maxTop));
-
-  currentItem.style.left = `${left}px`;
-  currentItem.style.top = `${top}px`;
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+  slider.classList.remove('active');
 });
 
-// Mouse up – drop logic
-document.addEventListener('mouseup', () => {
-  if (!currentItem) return;
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
 
-  isDragging = false;
-  currentItem.style.cursor = 'grab';
-  currentItem = null;
+slider.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2; // scroll speed
+  slider.scrollLeft = scrollLeft - walk;
 });
