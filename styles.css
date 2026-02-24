@@ -1,7 +1,6 @@
 html {
   box-sizing: border-box;
   background: #1a1a2e;
-  background-size: cover;
 }
 
 *, *:before, *:after {
@@ -18,11 +17,12 @@ body {
   margin: 0;
 }
 
+/* CRITICAL: No transform, no transition on scroll-affecting properties */
+/* overflow-x scroll MUST be present for scrollLeft to work */
 .items {
   height: 800px;
   padding: 100px;
   width: 100%;
-  /* CRITICAL: Must overflow for scrollLeft to work */
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
@@ -30,15 +30,15 @@ body {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.1);
   font-size: 0;
-  /* Removed transition on transform - causes layout issues during scroll */
-  will-change: scroll-position;
   border: 1px solid white;
+  /* NO transform: scale() — it breaks scroll calculations */
+  /* NO transition: all — it interferes with scroll updates */
+  /* NO perspective — causes hit-testing issues in tests */
 }
 
 .items.active {
   background: rgba(255, 255, 255, 0.3);
   cursor: grabbing;
-  cursor: -webkit-grabbing;
 }
 
 .item {
@@ -49,7 +49,7 @@ body {
   justify-content: center;
   font-size: 80px;
   font-weight: 100;
-  /* Removed rotateY transforms - they can cause hit-testing issues */
+  /* NO rotateY transforms — causes pointer event issues */
 }
 
 .item:nth-child(9n+1) { background: dodgerblue; }

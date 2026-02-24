@@ -1,37 +1,42 @@
 const slider = document.querySelector('.items');
 
-let isDown = false;
-let startX = 0;
-let startScrollLeft = 0;
+// Store state directly on the DOM element
+// This ensures Cypress synthetic events always read fresh state
+slider.isDown = false;
+slider.startX = 0;
+slider.startScrollLeft = 0;
 
-// mousedown: record starting position and current scrollLeft
-slider.addEventListener('mousedown', (e) => {
-  isDown = true;
+slider.addEventListener('mousedown', function(e) {
+  slider.isDown = true;
   slider.classList.add('active');
-  // Use clientX for consistency — pageX works too but must match mousemove
-  startX = e.pageX;
-  startScrollLeft = slider.scrollLeft;
+
+  // CRITICAL: support both pageX and clientX
+  // Cypress synthetic events sometimes only populate one of these
+  slider.startX = e.pageX || e.clientX || 0;
+  slider.startScrollLeft = slider.scrollLeft;
 });
 
-// mousemove: ALL listeners on the slider itself (not document/window)
-// so Cypress trigger() events reach the correct handler
-slider.addEventListener('mousemove', (e) => {
-  if (!isDown) return;
-  // NO e.preventDefault() — this was breaking Cypress synthetic events
-  const x = e.pageX;
-  const walk = startX - x; // drag left → positive walk → scroll right
-  slider.scrollLeft = startScrollLeft + walk;
+slider.addEventListener('mousemove', function(e) {
+  // Read state from DOM element — not closure — for Cypress compatibility
+  if (!slider.isDown) return;
+
+  // CRITICAL: NO e.preventDefault() here
+  // preventDefault on synthetic Cypress events breaks scroll assignment
+
+  const x = e.pageX || e.clientX || 0;
+  const walk = slider.startX - x;
+
+  // Directly assign scrollLeft — most reliable way for tests to detect
+  slider.scrollLeft = slider.startScrollLeft + walk;
 });
 
-// mouseup: stop dragging
-slider.addEventListener('mouseup', () => {
-  isDown = false;
+slider.addEventListener('mouseup', function() {
+  slider.isDown = false;
   slider.classList.remove('active');
 });
 
-// mouseleave: safety — stop drag if cursor leaves container
-slider.addEventListener('mouseleave', () => {
-  isDown = false;
+slider.addEventListener('mouseleave', function() {
+  slider.isDown = false;
   slider.classList.remove('active');
 });
 
