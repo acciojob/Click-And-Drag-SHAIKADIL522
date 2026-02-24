@@ -13,7 +13,6 @@ slider.addEventListener('mousedown', (e) => {
 
 slider.addEventListener('mousemove', (e) => {
   if (!isDown) return;
-  e.preventDefault();
   const x = e.pageX;
   const walk = startX - x;
   slider.scrollLeft = startScrollLeft + walk;
@@ -28,3 +27,4 @@ slider.addEventListener('mouseleave', () => {
   isDown = false;
   slider.classList.remove('active');
 });
+
