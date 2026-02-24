@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  background: url('https://source.unsplash.com/NFs6dRTBgaM/2000x2000') fixed;
+  background: #1a1a2e;
   background-size: cover;
 }
 
@@ -22,25 +22,23 @@ body {
   height: 800px;
   padding: 100px;
   width: 100%;
-  border: 1px solid white;
+  /* CRITICAL: Must overflow for scrollLeft to work */
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   user-select: none;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  transform: scale(0.98);
-  will-change: transform;
   background: rgba(255, 255, 255, 0.1);
   font-size: 0;
-  perspective: 500px;
+  /* Removed transition on transform - causes layout issues during scroll */
+  will-change: scroll-position;
+  border: 1px solid white;
 }
 
 .items.active {
   background: rgba(255, 255, 255, 0.3);
   cursor: grabbing;
   cursor: -webkit-grabbing;
-  transform: scale(1);
 }
 
 .item {
@@ -51,6 +49,7 @@ body {
   justify-content: center;
   font-size: 80px;
   font-weight: 100;
+  /* Removed rotateY transforms - they can cause hit-testing issues */
 }
 
 .item:nth-child(9n+1) { background: dodgerblue; }
@@ -62,6 +61,3 @@ body {
 .item:nth-child(9n+7) { background: lightcoral; }
 .item:nth-child(9n+8) { background: darkslateblue; }
 .item:nth-child(9n+9) { background: rebeccapurple; }
-
-.item:nth-child(even) { transform: scaleX(1.31) rotateY(40deg); }
-.item:nth-child(odd)  { transform: scaleX(1.31) rotateY(-40deg); }
