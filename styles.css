@@ -1,63 +1,35 @@
-html {
-  box-sizing: border-box;
-  background: #1a1a2e;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: sans-serif;
-  font-size: 20px;
-  margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
 
-/* CRITICAL: No transform, no transition on scroll-affecting properties */
-/* overflow-x scroll MUST be present for scrollLeft to work */
-.items {
-  height: 800px;
-  padding: 100px;
-  width: 100%;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-  user-select: none;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 0;
-  border: 1px solid white;
-  /* NO transform: scale() — it breaks scroll calculations */
-  /* NO transition: all — it interferes with scroll updates */
-  /* NO perspective — causes hit-testing issues in tests */
+.container {
+    width: 400px;
+    height: 400px;
+    border: 2px solid #333;
+    position: relative;
+    background-color: #fff;
 }
 
-.items.active {
-  background: rgba(255, 255, 255, 0.3);
-  cursor: grabbing;
+.cube {
+    width: 60px;
+    height: 60px;
+    background-color: #4caf50;
+    position: absolute;
+    cursor: grab;
+    user-select: none;
 }
 
-.item {
-  width: 200px;
-  height: calc(100% - 40px);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 80px;
-  font-weight: 100;
-  /* NO rotateY transforms — causes pointer event issues */
+.cube:active {
+    cursor: grabbing;
 }
-
-.item:nth-child(9n+1) { background: dodgerblue; }
-.item:nth-child(9n+2) { background: goldenrod; }
-.item:nth-child(9n+3) { background: paleturquoise; }
-.item:nth-child(9n+4) { background: gold; }
-.item:nth-child(9n+5) { background: cadetblue; }
-.item:nth-child(9n+6) { background: tomato; }
-.item:nth-child(9n+7) { background: lightcoral; }
-.item:nth-child(9n+8) { background: darkslateblue; }
-.item:nth-child(9n+9) { background: rebeccapurple; }
